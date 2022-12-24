@@ -1,2 +1,1 @@
-# web
-IchigoJam web
+# IchigoJam web
