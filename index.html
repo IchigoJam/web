@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='utf-8'>
+<title>IchigoJam web by jig.jp</title>
+<meta property="og:image" content="ichigojamweb-r2.png">
+<link rel="apple-touch-icon" href="icon-ichigojam.png"/>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+<meta name="format-detection" content="telephone=no">
+<script src="ichigojam.mjs" type="module"></script>
+<style>
+body {
+	font-family: sans-serif;
+	background-color: #fff;
+	text-align: center;
+	margin: 0px;
+	background-color: white;
+	box-sizing: border-box;
+	font-size: 16px;
+}
+h1 {
+	margin-top: 0.3em;
+}
+.buttons {
+	margin: 2px 0;
+}
+.buttons > button {
+	border: 1px solid black;
+	border-radius: 0;
+	padding: .5vh 1.0vw;
+	margin: 1vh 0;
+	background-color: white;
+}
+#keyspanel {
+	margin: 1em .8vw 1em .8vw;
+}
+#keyspanel span {
+	display: flex;
+	font-size: 2.7vmin;
+	align-items: center;
+	justify-content: center;
+  margin: 0 -1px -1px 0;
+	border: 1px solid #333;
+	padding: .6vmin 0;
+}
+/* I/O panel */
+#iopanel > table {
+	font-size: 2.2vw;
+	border: 1px solid black;
+	margin: 0.5em;
+}
+#iopanel th, #iopanel td {
+	text-align: center;
+}
+#program {
+	margin: 1.5em 0em;
+	padding: .3em;
+	border: 2px solid black;
+}
+#canvas {
+	width: 544px;
+	height: 416px;
+	x-border: 2px solid black;
+	background-color: black;
+}
+textarea {
+	width: 544px;
+	height: 4em;
+}
+@media screen and (max-aspect-ratio: 3/4) { /* 縦長タブレット、画面いっぱい */
+	#canvas {
+		width: 100vw;
+		height: 76.47vw
+	}
+	textarea {
+		width: 90vw;
+		height: 4em;
+	}
+}
+@media screen and (max-aspect-ratio: 2/3) { /* もっと縦長スマホとか、キーを大きく */
+	#keyspanel span {
+		padding: 1.5vmin 0;
+		x-padding: 3.5vmin 0;
+	}
+}
+/*
+@media screen and (max-width: 580px), screen and (max-height: 420px) {
+	#canvas {
+		width: 370px;
+		height: 283px;
+	}
+	textarea {
+		width: 370px;
+		height: 4em;
+	}
+}
+@media screen and (max-width: 374px), screen and (max-height: 288px) {
+	body {
+		font-size: 70%;
+	}
+	#canvas {
+		width: 280px;
+		height: 212px;
+	}
+	textarea {
+		width: 280px;
+		height: 4em;
+	}
+}
+*/
+/*
+@media all and (display-mode: fullscreen) and (min-aspect-ratio: 544/416) {
+	body {
+		background-color: black;
+	}
+	
+	#canvas {
+		width: 130.77vh;
+		height: 100vh;
+	}
+}
+@media all and (display-mode: fullscreen) and (max-aspect-ratio: 544/416) {
+	body {
+		background-color: black;
+	}
+	#canvas {
+		width: 100vw;
+		height: 76.47vw;
+	}
+}
+*/
+/* 7seg */
+.sseg {
+	position: absolute;
+	right: 30px;
+	top: 10px;
+	display: inline-block;
+	margin: 4px;
+}
+.sseg div {
+	width: 10px;
+	height: 6px;
+	border: 4px solid #ed2020;
+	border-radius: 3px;
+}
+.sseg div:first-child {
+	border-bottom: none;
+	height: 8px;
+}
+/* dobutsu */
+#btn_dobutsu {
+	height: 1.2em;
+	vertical-align: middle;
+	padding-left: .3em;
+}
+#dobutsupanel {
+	margin: 2em 0;
+}
+#dobutsupanel hr {
+	width: 60%;
+	margin: 2em auto;
+	text-align: center;
+}
+#dobutsupanel button {
+	background-color: #ddd;
+	border: none;
+	border-radius: .2em;
+	padding: 1em;
+	width: 18em;
+	margin: 0;
+	color: #111;
+}
+#dobutsupanel select {
+	font-size: 95%;
+	padding: .2em 1em;
+	margin: 0 .2em;
+	width: 12em;
+}
+#dobutsupanel input {
+	font-size: 95%;
+	padding: .2em .2em;
+	text-align: center;
+	margin: 0 .2em;
+	width: 11em;
+}
+#dobutsupanel .arrow {
+	width: 1.2em;
+	padding: .5em;
+	margin: 0;
+}
+/* credit */
+#credit {
+	font-size: 12px;
+	margin-top: 1em;
+}
+a {
+	color: gray !important;
+}
+</style>
+</head>
+<body>
+<h1>IchigoJam web</h1>
+
+<canvas id=canvas></canvas><br>
+<div class=buttons>
+<button id=btn_keys>KEY</button>
+<button id=btn_esc>ESC</button>
+<button id=btn_export>EXPORT</button>
+<button id=btn_import>IMPORT</button>
+<button id=btn_full>FULL</button>
+<button id=btn_io>I/O</button>
+<button id=btn_audio>AUDIO ON</button>
+<img id=btn_dobutsu src="./silhouette-illust_30831_zou.png">
+</div>
+<div id=keyspanel style="display:none"></div>
+<div id=iopanel style="display:none"></div>
+<div id=dobutsupanel style="display:none">
+	<div>
+		<select><option>ぞう</option></select>
+		<select><option>ぞう</option></select>
+		<select><option>ぞう</option></select>
+	</div>
+	<div><img class="arrow" src="./silhouette-illust_396_arrow.png"></div>
+	<button>このプログラムをみる</button>
+	<hr>
+	<button>このプログラムをシェアする</button>
+	<div><img class="arrow" src="./silhouette-illust_396_arrow.png"></div>
+	<div>
+		<input disabled=true value="?">
+		<input disabled=true value="?">
+		<input disabled=true value="?">
+	</div>
+</div>
+<div id=seg class=sseg><div></div><div></div></div>
+<textarea id=program></textarea><br>
+<script type="module" src="https://code4fukui.github.io/qr-code-reader/qr-code-reader.js"></script>
+<div>
+	<a href=https://store-jp.nintendo.com/feature_joycon.html>Joy-Con</a> <button id=btnjoycon>接続</button> / 
+	<a href=https://www.nintendo.co.jp/ring/>Ring-Con</a> <button id=btnringcon>接続</button> / 
+	<a href=https://kurikit.ux-xu.com/cocorokit-plus/>ココロキット+</a> <button id=btncocoro>接続</button>
+	<!--<qr-code-reader id=qrcocoro></qr-code-reader>-->
+	<!--
+	<input type="text" id="cocoroid" style="width:6em"><br>
+	-->
+	<span id=cocorokitc></span>
+</div>
+
+<br>
+<a href=https://fukuno.jig.jp/app/csv/ichigojam-cmd.html target=_blank>IchigoJam BASIC リファレンス</a> (<a href=https://fukuno.jig.jp/app/csv/ichigojam-cmd.html#lang=en target=_blank>English version</a>)<br>
+<br>
+【IchigoJamプログラミング、ネット教材】<br>
+<a target=_blank href=https://fukuno.jig.jp/app/IchigoJam/firstgame.html>はじめてのプログラミング動画付き IchigoJam web</a><br>
+<a target=_blank href=https://ichigojam.net/book/IchigoJam-firstgame.pdf>はじめのいっぽ＆ミニゲームズ</a><br>
+<a target=_blank href=https://ichigojam.github.io/print/ja/>IchigoJamプリント</a><br>
+<a target=_blank href=http://fukuno.jig.jp/704>IchigoJamプログラミング入門</a><br>
+<a target=_blank href=http://pcn.club/sp/diprogram/>ダンブンゲームズ by PCN</a><br>
+
+
+<br>
+<div id="credit">
+IchigoJam web: <a href=https://ichigojam.net/>IchigoJam</a> (blog <a href="http://fukuno.jig.jp/1728">fukuno.jig.jp</a>)<br>
+API: <a href=http://webassembly.org/>WebAssembly / WASM</a><br>
+Illust: <a href=https://www.silhouette-illust.com/>無料のAi・PNG白黒シルエットイラスト</a><br>
+<a href=https://github.com/ichigojam/web>src on GitHub</a><br>
+</p><p>
+
+</div>
+
+</body>
+</html>
