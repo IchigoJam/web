@@ -75,6 +75,14 @@ const setSpeechMode = (b) => {
 	speechmode = b;
 };
 
+let check0;
+const setButtonState = (n) => {
+	ex.setButtonState(n);
+	if (check0) {
+		check0.checked = n;
+	}
+};
+
 const RAM_PCG = 0x700 - 0x700
 const RAM_VAR = 0x800 - 0x700
 const RAM_VRAM = 0x900 - 0x700
@@ -352,7 +360,7 @@ const init = function() {
 			}
 			bkled = led;
 			if (cocorobtn != bkcocorobtn) {
-				ex.setButtonState(cocorobtn);
+				setButtonState(cocorobtn);
 			}
 			bkcocorobtn = cocorobtn;
 
@@ -884,8 +892,13 @@ CAP ALT CTL INS KAN | ? < > ↑ _ ]
 			check.name = i < 9 ? i : i + 1
 			td.appendChild(check)
 			tr.appendChild(td)
-			check.onchange = function() {
-				ex.setStateIN(this.name, this.checked ? 1023 : 0)
+			if (i == 0) {
+				check.disabled = true;
+				check0 = check;
+			} else {
+				check.onchange = function() {
+					ex.setStateIN(this.name, this.checked ? 1023 : 0)
+				}
 			}
 		}
 		tr = create("tr")
@@ -1221,17 +1234,17 @@ CAP ALT CTL INS KAN | ? < > ↑ _ ]
 	// canvas touch
 	if (canvas.ontouchstart === null) {
 		canvas.ontouchstart = function() {
-			ex.setButtonState(1)
+			setButtonState(1)
 		}
 		canvas.ontouchend = function() {
-			ex.setButtonState(0)
+			setButtonState(0)
 		}
 	} else {
 		canvas.onmousedown = function() {
-			ex.setButtonState(1)
+			setButtonState(1)
 		}
 		canvas.onmouseup = function() {
-			ex.setButtonState(0)
+			setButtonState(0)
 		}
 	}
 	// gamepad
@@ -1314,7 +1327,7 @@ CAP ALT CTL INS KAN | ? < > ↑ _ ]
 		const ctrl = CTRLS[pad.id] || DEFAULT_CTRL;
 		if (ctrl.btn !== undefined) {
 			//console.log(pad) // debug
-			ex.setButtonState(getGamePadValue(pad, ctrl.btn))
+			setButtonState(getGamePadValue(pad, ctrl.btn))
 		}
 		const TH = .5;
 		if (ctrl.updown !== undefined) {
