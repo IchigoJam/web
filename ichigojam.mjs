@@ -1198,7 +1198,7 @@ CAP ALT CTL INS KAN | ? < > ↑ _ ]
 		if (el.scrollHeight > el.offsetHeight) {
 			el.style.height = el.scrollHeight + "px";
 		} else {
-			for (;;) {
+			for (let i = 0; i < 10; i++) {
 				var h = Number(el.style.height.split("px")[0]);
 				var lh = Number(el.style.lineHeight.split("px")[0]);
 				el.style.height = (h - lh) + "px"; 
