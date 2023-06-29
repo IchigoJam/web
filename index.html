@@ -9,12 +9,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
 <meta name="format-detection" content="telephone=no">
 <script src="ichigojam.mjs" type="module"></script>
+<script type="module" src="https://code4fukui.github.io/i18n/translation.js"></script>
 <style>
 body {
 	font-family: sans-serif;
 	background-color: #fff;
 	text-align: center;
 	margin: 0px;
+	margin-bottom: 3em;
 	background-color: white;
 	box-sizing: border-box;
 	font-size: 16px;
@@ -226,9 +228,9 @@ a {
 		<select><option>ぞう</option></select>
 	</div>
 	<div><img class="arrow" src="./silhouette-illust_396_arrow.png"></div>
-	<button>このプログラムをみる</button>
+	<button class=ja>このプログラムをみる</button>
 	<hr>
-	<button>このプログラムをシェアする</button>
+	<button class=ja>このプログラムをシェアする</button>
 	<div><img class="arrow" src="./silhouette-illust_396_arrow.png"></div>
 	<div>
 		<input disabled=true value="?">
@@ -241,9 +243,9 @@ a {
 <textarea id=program></textarea><br>
 <script type="module" src="https://code4fukui.github.io/qr-code-reader/qr-code-reader.js"></script>
 <div>
-	<a href=https://store-jp.nintendo.com/feature_joycon.html>Joy-Con</a> <button id=btnjoycon>接続</button> / 
-	<a href=https://www.nintendo.co.jp/ring/>Ring-Con</a> <button id=btnringcon>接続</button> / 
-	<a href=https://kurikit.ux-xu.com/cocorokit-plus/>ココロキット+</a> <button id=btncocoro>接続</button>
+	<a href=https://store-jp.nintendo.com/feature_joycon.html>Joy-Con</a> <button id=btnjoycon class=ja>接続</button> / 
+	<a href=https://www.nintendo.co.jp/ring/>Ring-Con</a> <button id=btnringcon class=ja>接続</button> / 
+	<a href=https://kurikit.ux-xu.com/cocorokit-plus/ class=ja>ココロキット+</a> <button id=btncocoro class=ja>接続</button>
 	<!--<qr-code-reader id=qrcocoro></qr-code-reader>-->
 	<!--
 	<input type="text" id="cocoroid" style="width:6em"><br>
@@ -252,26 +254,48 @@ a {
 </div>
 
 <br>
-<a href=https://fukuno.jig.jp/app/csv/ichigojam-cmd.html target=_blank>IchigoJam BASIC リファレンス</a> (<a href=https://fukuno.jig.jp/app/csv/ichigojam-cmd.html#lang=en target=_blank>English version</a>)<br>
-<br>
-【IchigoJamプログラミング、ネット教材】<br>
-<a target=_blank href=https://ichigojam.github.io/slide/IchigoJam-first-game/IchigoJam-first-game-web.pdf>はじめてのプログラミング</a>（<a target=_blank href=https://www.youtube.com/watch?v=GJSslpKxlCI>動画</a>、<a target=_blank href=https://fukuno.jig.jp/app/IchigoJam/firstgame.html>動画付き</a>）<br>
-<a target=_blank href=https://ichigojam.net/IchigoJam-firstgame.pdf>はじめのいっぽ＆ミニゲームズ</a>（<a href=https://www.youtube.com/watch?v=0drNeZ9UUIs>動画</a>）<br>
-<a target=_blank href=https://ichigojam.github.io/print/ja/>IchigoJamプリント</a><br>
-<a target=_blank href=https://fukuno.jig.jp/704>IchigoJamプログラミング入門</a><br>
-<a target=_blank href=https://pcn.club/sp/diprogram/>ダンブンゲームズ by PCN</a><br>
-<br>
-【はんだづけから楽しむ、IchigoJamハーフキット】<br>
-<a target=_blank href=https://hello002.stores.jp/items/61dfa83ce3bbd16086b9bd50><img class=ichigojam src=./ichigojam-r.jpg></a><br>
+<div class=ja_content>
+	<a href=https://fukuno.jig.jp/app/csv/ichigojam-cmd.html target=_blank>IchigoJam BASIC リファレンス</a> (<a href=https://fukuno.jig.jp/app/csv/ichigojam-cmd.html#lang=en target=_blank>英語版</a>)<br>
+	<br>
+	【IchigoJamプログラミング、ネット教材】<br>
+	<a target=_blank href=https://ichigojam.github.io/slide/IchigoJam-first-game/IchigoJam-first-game-web.pdf>はじめてのプログラミング</a>（<a target=_blank href=https://www.youtube.com/watch?v=GJSslpKxlCI>動画</a>、<a target=_blank href=https://fukuno.jig.jp/app/IchigoJam/firstgame.html>動画付き</a>）<br>
+	<a target=_blank href=https://ichigojam.net/IchigoJam-firstgame.pdf>はじめのいっぽ＆ミニゲームズ</a>（<a target=_blank href=https://www.youtube.com/watch?v=0drNeZ9UUIs>動画</a>）<br>
+	<a target=_blank href=https://ichigojam.github.io/print/ja/>IchigoJamプリント</a><br>
+	<a target=_blank href=https://fukuno.jig.jp/704>IchigoJamプログラミング入門</a><br>
+	<a target=_blank href=https://pcn.club/sp/diprogram/>ダンブンゲームズ by PCN</a><br>
+	<br>
+	【はんだづけから楽しむ、IchigoJamハーフキット】<br>
+	<a target=_blank href=https://hello002.stores.jp/items/61dfa83ce3bbd16086b9bd50><img class=ichigojam src=./ichigojam-r.jpg></a><br>
 
-<br>
-<div id="credit">
-IchigoJam web: <a href=https://ichigojam.net/>IchigoJam</a> (blog <a href="http://fukuno.jig.jp/1728">fukuno.jig.jp</a>)<br>
-API: <a href=http://webassembly.org/>WebAssembly / WASM</a><br>
-Illust: <a href=https://www.silhouette-illust.com/>無料のAi・PNG白黒シルエットイラスト</a><br>
-<a href=https://github.com/ichigojam/web>src on GitHub</a><br>
-</p><p>
+	<br>
+	<div id="credit">
+	IchigoJam web: <a href=https://ichigojam.net/>IchigoJam</a> by <a target=_blank href=https://webassembly.org/>WebAssembly / WASM</a> (blog <a href="http://fukuno.jig.jp/1728">fukuno.jig.jp</a>)<br>
+	API: <a href=http://webassembly.org/>WebAssembly / WASM</a><br>
+	Illust: <a href=https://www.silhouette-illust.com/ class=ja>無料のAi・PNG白黒シルエットイラスト</a><br>
+	Web interface: <a href=https://github.com/ichigojam/web>src on GitHub</a><br>
+	</div>
 
+</div>
+
+<div class=en_content style="display:none">
+	<a href=https://fukuno.jig.jp/app/csv/ichigojam-cmd.html#lang=en target=_blank>IchigoJam BASIC reference</a><br>
+	<br>
+	【How to program on IchigoJam】<br>
+	<a target=_blank href=http://fukuno.jig.jp/img/IchigoJam-firstkit-en-3.jpg>IchigoJam first step</a> (<a target=_blank href=https://www.youtube.com/watch?v=GJSslpKxlCI>video</a>)<br>
+	<a target=_blank href=http://fukuno.jig.jp/img/IchigoJam-firstkit-en-4.jpg>IchigoJam mini games</a>（<a target=_blank href=https://www.youtube.com/watch?v=0drNeZ9UUIs>video</a>）<br>
+	<a target=_blank href=https://ichigojam.github.io/print/en/>IchigoJam print</a><br>
+	<a target=_blank href=https://fukuno.jig.jp/704>How to start IchigoJam programming (ja)</a><br>
+	<a target=_blank href=https://pcn.club/sp/diprogram/>Danbun games by PCN (ja)</a><br>
+	<br>
+	【Let's solder the IchigoJam half kit】<br>
+	<a target=_blank href=https://hello002.stores.jp/items/61dfa83ce3bbd16086b9bd50><img class=ichigojam src=./ichigojam-r.jpg></a><br>
+
+	<br>
+	<div id="credit">
+	IchigoJam web: <a href=https://ichigojam.net/index-en.html>IchigoJam</a> by <a target=_blank href=https://webassembly.org/>WebAssembly / WASM</a> (blog <a href="http://fukuno.jig.jp/1728">fukuno.jig.jp</a>)<br>
+	Illust: <a href=https://www.silhouette-illust.com/ class=ja>無料のAi・PNG白黒シルエットイラスト</a><br>
+	Web interface: <a href=https://github.com/ichigojam/web>src on GitHub</a><br>
+	</div>
 </div>
 
 </body>
