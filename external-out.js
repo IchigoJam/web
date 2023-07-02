@@ -5,10 +5,10 @@ export class ExternalOut extends HTMLElement {
   constructor() {
     super();
     this.style.display = "inline-block";
-    this.flgsignal = true;
+    this.flgsignal = false;
     this.signal = new TrafficSignal();
     this.sseg = new SevenSegment();
-    this.appendChild(this.signal);
+    this.appendChild(this.sseg);
     this.onclick = () => {
       this.flgsignal = !this.flgsignal;
       this.innerHTML = "";
