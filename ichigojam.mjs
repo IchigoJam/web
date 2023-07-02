@@ -380,8 +380,8 @@ const init = function() {
 
 		if (window.drawOutport) {
 			window.drawOutport(g, outport)
-		} else {
-			sseg.setSegments(outport)
+		} else if (window.extout) {
+			extout.setSegments(outport);
 		}
 		if (outflg.length > 0) {
 			for (let i = 1; i < 12; i++) {
@@ -681,7 +681,6 @@ const init = function() {
 	btn_esc.onclick = function() {
 		putc(27);
 	};
-	sseg = new Sseg(seg);
 
 	// keyboards
 	if (window.btn_keys === undefined) {
@@ -1497,27 +1496,6 @@ var exitFullscreen = function() {
 	} else if(document.exitFullscreen) {
 		document.exitFullscreen(); // HTML5 Fullscreen API仕様
 	}
-};
-
-var sseg;
-
-// 7seg
-
-
-var Sseg = function(div) {
-	this.div1 = div.childNodes[0];
-	this.div2 = div.childNodes[1];
-};
-Sseg.prototype.setSegments = function(n) {
-	var on = "#ed2020";
-	var off = "#eee";
-	this.div1.style.borderTopColor = n & 1 ? on : off;
-	this.div1.style.borderRightColor = n & 2 ? on : off;
-	this.div2.style.borderRightColor = n & 4 ? on : off;
-	this.div2.style.borderBottomColor = n & 8 ? on : off;
-	this.div2.style.borderLeftColor = n & 16 ? on : off;
-	this.div1.style.borderLeftColor = n & 32 ? on : off;
-	this.div2.style.borderTopColor = n & 64 ? on : off;
 };
 
 // sound

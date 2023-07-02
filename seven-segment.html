@@ -1,0 +1,18 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width">
+<script type="module" src="./seven-segment.js"></script>
+<seven-segment id=seg></seven-segment>
+
+<style>
+#seg {
+  width: 300px;
+  height: 100px;
+}
+</style>
+
+<script type="module">
+import { sleep } from "https://js.sabae.cc/sleep.js";
+for (let i = 0;; i++) {
+  await sleep(500);
+  seg.setSegments(i);
+}
+</script>

@@ -1,0 +1,20 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width">
+<script type="module" src="./external-out.js"></script>
+<external-out id=seg></external-out>
+
+<style>
+#seg {
+  position: absolute;
+  height: 100px;
+  right: 10px;
+  top: 30px;
+}
+</style>
+
+<script type="module">
+import { sleep } from "https://js.sabae.cc/sleep.js";
+for (let i = 0;; i++) {
+  await sleep(500);
+  seg.setSegments(i);
+}
+</script>
