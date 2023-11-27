@@ -821,9 +821,11 @@ CAP ALT CTL INS KAN | ? < > ↑ _ ]
 			}
 		}
 	}
-	const ua = window.navigator.userAgent
-	if (ua.indexOf('iP') >= 0 || ua.indexOf('Android') >= 0) {
-		btn_keys.onclick()
+	const ua = window.navigator.userAgent;
+	const isMobile = ua.indexOf('iP') >= 0 || ua.indexOf('Android') >= 0;
+	const isIPad = ua.indexOf("ipad") >= 0 || (ua.indexOf("macintosh") >= 0 && "ontouchend" in document);
+	if (isMobile || isIPad) {
+		btn_keys.onclick();
 	}
 
 	const create = tag => document.createElement(tag)
