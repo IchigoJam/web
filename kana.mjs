@@ -5,12 +5,13 @@ const hiragana2katakana = function(s) {
 		return String.fromCodePoint(s.codePointAt(0) + 0x60)
 	})
 }
-const katakana2hiraana = function(s) {
+const katakana2hiragana = function(s) {
 	return s.replace(/[ア-ン]/g, function(s) {
 		//return String.fromCharCode(s.charCodeAt(0) - 0x60)
 		return String.fromCodePoint(s.codePointAt(0) + 0x60)
 	})
 }
+
 // hankaku, half kana
 const HALF_KANA_ZEN = "￥。「」、・ヲァィゥェォャュョッーアイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワン゛゜"
 const HALF_KANA = "\¥｡｢｣､･ｦｧｨｩｪｫｬｭｮｯｰｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝﾞﾟ" // 	FORI=#A0TO#DF:?CHR$(I);:NEXT
@@ -60,4 +61,4 @@ const toHankaku = function(c) { // ret array
 	return [ getHankakuCode(c) ]
 }
 
-export default { hiragana2katakana, katakana2hiraana, fromHankaku, getHankakuCode, toHankaku }
+export default { hiragana2katakana, katakana2hiragana, fromHankaku, getHankakuCode, toHankaku }
