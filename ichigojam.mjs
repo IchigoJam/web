@@ -4,6 +4,7 @@ import { speech } from "./speech.mjs";
 import { DobutsuCode } from "https://pcn-club.github.io/DobutsuCode/DobutsuCode.js";
 import { DobutsuStorageClient } from "https://pcn-club.github.io/DobutsuStorage/DobutsuStorageClient.js";
 import { JoyConSupport } from "./JoyConSupport.js";
+import { BeepNode } from "./BeepNode.js";
 
 //import { QRCodeReader } from "https://code4fukui.github.io/qr-code-reader/qr-code-reader.js";
 
@@ -139,9 +140,9 @@ window.onload = async function () {
 	charptn = new Uint8Array(ex.memory.buffer, ex.getCharPattern(), ex.getCharPatternSize())
 	storage = new Uint8Array(ex.memory.buffer, ex.getStorage(), ex.getStorageSize())
 	uartoutput = new Uint8Array(ex.memory.buffer, ex.getUARTOutput(), ex.getUARTOutputSize())
-	init()
+	await init()
 }
-const init = function() {
+const init = async () => {
 	var tick = function() {
 		try {
 			ex.tick()
@@ -191,13 +192,13 @@ const init = function() {
 		})
 	}
 	
-	var snd = null; // = getSound(); // for autoplay polity
-	var initSound = function() {
+	let snd = null; // = getSound(); // for autoplay polity
+	const initSound = async () => {
 		if (!snd) {
-			snd = getSound();
+			snd = await getSound();
 		}
 	};
-	initSound();
+	//await initSound();
 	
 	// storage
 	// const uintarray2hex = ar => ar.map(v => util.fix0(v.toString(16), 2)).join('')
@@ -440,7 +441,7 @@ const init = function() {
 			initfunc = null;
 		}
 		if (snd) {
-			snd.freq = freq;
+			snd.setFreq(freq / 2);
 		}
 	}
 	
@@ -1059,14 +1060,12 @@ CAP ALT CTL INS KAN | ? < > ↑ _ ]
 			btn_full.onclick()
 		}
 	}
-	btn_audio.onclick = function() {
+	btn_audio.onclick = async () => {
 		if (btn_audio.textContent == 'AUDIO ON') {
-			if (snd) {
-				snd.audio.resume()
-			}
+			snd = await getSound();
 			btn_audio.textContent = 'AUDIO OFF'
 		} else {
-			snd.audio.suspend()
+			releaseSound();
 			btn_audio.textContent = 'AUDIO ON'
 		}
 	}
@@ -1502,45 +1501,19 @@ var exitFullscreen = function() {
 
 // sound
 
-var getSound = function() {
-	try {
-		window.AudioContext = window.webkitAudioContext || window.AudioContext;
-		var audio = new AudioContext();
-		if (!audio)
-			return null;
-		var node = audio.createScriptProcessor(1024, 2, 2);
-		var gain = audio.createGain();
-		var sampleRate = audio.sampleRate;
-	
-		var src = audio.createBufferSource();
-		src.buffer = audio.createBuffer(2, 1024, audio.sampleRate);
-		src.connect(node);
-		node.connect(gain);
-		gain.connect(audio.destination);
-	
-		var counter = 0;
-		var snd = { freq: 0 };
-		node.onaudioprocess = function(data) {
-			var period = snd.freq / sampleRate;
-			var outl = data.outputBuffer.getChannelData(0);
-			var outr = data.outputBuffer.getChannelData(1);
-			var procsize = data.inputBuffer.length;
-			for (let i = 0; i < procsize; i++){
-				outl[i] = outr[i] = counter > 0 ? 1 : -1;
-	//			data[i] = counter; // triangle
-				counter += period;
-				if (counter >= 1.0)
-					counter -= 2.0;
-			}
-		};
-		gain.gain.value = 0.2;
-		snd.gain = gain.gain;
-		snd.audio = audio;
-		return snd;
-	} catch (e) {
-		console.log(e);
-	}
-	return null;
-}
+let context = null;
+
+const getSound = async () => {
+  if (context) await context.close();
+  context = new AudioContext();
+  const node = await BeepNode.create(context);
+  node.connect(context.destination);
+	node.setVolume(0.3);
+	return node;
+};
+const releaseSound = async () => {
+	await context.close();
+	context = null;
+};
 
 export { setSpeechMode, ex };
