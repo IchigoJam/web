@@ -1,0 +1,61 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><link rel="icon" href="data:">
+<title>ひみつの動物コードリスト</title>
+</head>
+<body>
+<h1>ひみつの動物コードリスト</h1>
+
+<div id=divlist></div>
+
+<hr>
+<input id=innum value=5> <button id=btnlogout>ログアウト</button><br>
+秘密鍵を持ち、対応する公開鍵を登録した人のみアクセスできます。<br>
+（参考、<a href=https://code4fukui.github.io/hanko/experience.html>電子署名と検証の体験</a>）
+
+
+<script type="module">
+import { DobutsuCode } from "https://pcn-club.github.io/DobutsuCode/DobutsuCode.js";
+import { DobutsuStorageClient } from "https://pcn-club.github.io/DobutsuStorage/DobutsuStorageClient.js";
+
+const dendpoint = "https://app.sabae.cc/dobutsu_storage/api/";
+const dstorage = new DobutsuStorageClient(dendpoint);
+
+btnlogout.onclick = () => {
+  localStorage.removeItem("dobutsu_prikey");
+  localStorage.removeItem("dobutsu_pubkey");
+	dstorage.prikey = null;
+	dstorage.pubkey = null;
+	alert("reset")
+};
+
+let bkfirst = null;
+const getList = async () => {
+	const list = await dstorage.get(parseInt(innum.value));
+	console.log(list);
+	if (list[0].dcode == bkfirst) {
+		return;
+	}
+	const links = list.map(i => `<a target="_ij" href="./?dc=${i.dcode.replace(/ /g, ",")}">${i.dcode}</a>`).join("<br>");
+	bkfirst = list[0].dcode;
+	divlist.innerHTML = links;
+};
+innum.oninput = () => {
+	bkfirst = null;
+};
+
+setInterval(getList, 1000);
+getList();
+</script>
+
+<style>
+a {
+	color: gray !important;
+}
+#divlist {
+	margin: 1em;
+}
+#innum {
+	width: 3em;
+	font-size: 16px;
+}
+</style>
+
