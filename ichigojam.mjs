@@ -1126,6 +1126,17 @@ CAP ALT CTL INS KAN | ? < > ↑ _ ]
 				dobutsupanel.querySelectorAll("input").forEach((inp, idx) => inp.value = dobutsucode[idx]);
 			};
 		};
+		// initial load ?dc=
+		setTimeout(async () => {
+			const url = new URL(location.href);
+			const dc = url.searchParams.get("dc").replace(/\,/g, " ");
+			if (dc) {
+				const program = await dstorage.load(dc);
+				if (program) {
+					setIchigoJamState({ program });
+				}
+			}
+		}, 10);
 	}
 	const equalsBin = (b1, b2) => {
 		if (b1 == b2) {
