@@ -1129,7 +1129,7 @@ CAP ALT CTL INS KAN | ? < > ↑ _ ]
 		// initial load ?dc=
 		setTimeout(async () => {
 			const url = new URL(location.href);
-			const dc = url.searchParams.get("dc").replace(/\,/g, " ");
+			const dc = url.searchParams.get("dc")?.replace(/\,/g, " ");
 			if (dc) {
 				const program = await dstorage.load(dc);
 				if (program) {
