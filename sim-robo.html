@@ -1,0 +1,15 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width">
+<script type="module" src="./sim-robo.js"></script>
+<sim-robo id=robo></sim-robo>
+
+<script type="module">
+import { sleep } from "https://js.sabae.cc/sleep.js";
+for (let i = 0;; i++) {
+  robo.out(33);
+  await sleep(500);
+  robo.out(34);
+  await sleep(500);
+  //robo.out(18);
+  //await sleep(200);
+}
+</script>

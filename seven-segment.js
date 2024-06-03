@@ -25,6 +25,7 @@ export class SevenSegment extends HTMLElement {
     this.div2 = document.createElement("div");
     this.appendChild(this.div2);
     style(CSS);
+    this.setSegments(0);
   }
   setSegments(n) {
     const on = "#ed2020";
