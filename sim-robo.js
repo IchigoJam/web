@@ -9,10 +9,6 @@ export class SimRobo extends HTMLElement {
       return img;
     };
     this.img = create();
-    this.img.posx = innerWidth / 2 - this.img.width / 2;
-    this.img.posy = innerWidth / 2 - this.img.height / 2;
-    this.img.style.left = this.img.posx + "px";
-    this.img.style.top = this.img.posy + "px";
     this.img.style.position = "absolute";
     this.motorr = 0;
     this.motorl = 0;
@@ -20,6 +16,7 @@ export class SimRobo extends HTMLElement {
     this.speeddir = 2; // deg
     this.direction = 0;
     this.t = null;
+    this.reset();
 
     const img2 = create();
     img2.style.filter = "grayscale(100%)";
@@ -36,11 +33,18 @@ export class SimRobo extends HTMLElement {
         }
       } else {
         if (this.parentElement) {
+          this.reset();
           document.body.appendChild(this.img);
           this.activeflg = true;
         }
       }
     }, 200);
+  }
+  reset() {
+    this.img.posx = innerWidth / 2 - this.img.width / 2;
+    this.img.posy = innerWidth / 2 - this.img.height / 2;
+    this.img.style.left = this.img.posx + "px";
+    this.img.style.top = this.img.posy + "px";
   }
   out(n) {
     if (n & 1) {
