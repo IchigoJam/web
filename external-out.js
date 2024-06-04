@@ -24,6 +24,13 @@ export class ExternalOut extends HTMLElement {
     this.bkn = n;
     this.outs[this.state].setSegments(n);
   }
+  setIchigoJamCore(ex) {
+    this.outs.forEach(i => {
+      if (i.setIchigoJamCore) {
+        i.setIchigoJamCore(ex)
+      }
+    });
+  }
 }
 
 customElements.define("external-out", ExternalOut);

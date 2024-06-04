@@ -1,3 +1,5 @@
+import { getDistanceFromWall } from "./util2d.js";
+
 export class SimRobo extends HTMLElement {
   constructor() {
     super();
@@ -14,7 +16,7 @@ export class SimRobo extends HTMLElement {
     this.motorl = 0;
     this.speed = 2;
     this.speeddir = 2; // deg
-    this.direction = 0;
+    this.direction = 90;
     this.t = null;
     this.reset();
 
@@ -23,6 +25,36 @@ export class SimRobo extends HTMLElement {
     img2.width = img2.width / 2;
     img2.height = img2.height / 2;
     this.appendChild(img2);
+
+    // drag
+    this.dragging = false;
+    let offsetX, offsetY;
+    const img = this.img;
+    img.addEventListener('mousedown', (e) => {
+      this.dragging = true;
+      offsetX = e.clientX - img.offsetLeft;
+      offsetY = e.clientY - img.offsetTop;
+      img.style.cursor = 'grabbing';
+      e.preventDefault();
+    });
+    document.addEventListener('mousemove', (e) => {
+      if (this.dragging) {
+        const x = e.clientX - offsetX;
+        const y = e.clientY - offsetY;
+        img.style.left = `${x}px`;
+        img.style.top = `${y}px`;
+        img.posx = x;
+        img.posy = y;
+        this.calcDistanceFromWall();
+      }
+    });
+    document.addEventListener('mouseup', () => {
+      if (this.dragging) {
+        this.dragging = false;
+        img.style.cursor = 'move';
+      }
+    });
+    //
     
     this.activeflg = false;
     setInterval(() => {
@@ -45,6 +77,7 @@ export class SimRobo extends HTMLElement {
     this.img.posy = innerWidth / 2 - this.img.height / 2;
     this.img.style.left = this.img.posx + "px";
     this.img.style.top = this.img.posy + "px";
+    this.calcDistanceFromWall();
   }
   out(n) {
     if (n & 1) {
@@ -64,11 +97,12 @@ export class SimRobo extends HTMLElement {
     const move = this.motorl || this.motorr;
     if (!this.t && move) {
       this.t = setInterval(() => {
+        if (this.dragging) return;
         this.direction += (this.motorl - this.motorr) * this.speeddir;
         const step = (this.motorr + this.motorl) * this.speed;
-        const th = -(this.direction / 180 * Math.PI) - Math.PI / 2;
+        const th = this.direction / 180 * Math.PI;
         const dx = Math.cos(th) * step;
-        const dy = -Math.sin(th) * step;
+        const dy = Math.sin(th) * step;
         this.img.posx += dx;
         this.img.posy += dy;
         if (this.img.posx > innerWidth - this.img.width) {
@@ -83,16 +117,33 @@ export class SimRobo extends HTMLElement {
         }
         this.img.style.left = (this.img.posx + dx) + "px";
         this.img.style.top = (this.img.posy + dy) + "px";
-        this.img.style.transform = `rotate(${this.direction}deg)`;
+        this.img.style.transform = `rotate(${this.direction - 90}deg)`;
         this.img.style.transformOrigin = `center center`;
+
+        this.calcDistanceFromWall();
+        if (this.ex) {
+          this.ex.setStateIN(2, this.distancesensor);
+        }
       }, 100);
     } else if (this.t && !move) {
       clearInterval(this.t);
       this.t = null;
     }
   }
+  calcDistanceFromWall() {
+    const x = this.img.posx;
+    const y = this.img.posy;
+    const th = this.direction / 180 * Math.PI + Math.PI;
+    const len = getDistanceFromWall(x, y, th, 0, 0, innerWidth, innerHeight);
+    this.distance = len;
+    this.distancesensor = Math.max(Math.floor(1023 - len * 10), 0);
+    //console.log(len, this.direction, this.distancesensor);
+  }
   setSegments(n) {
     this.out(n);
+  }
+  setIchigoJamCore(ex) {
+    this.ex = ex;
   }
 }
 

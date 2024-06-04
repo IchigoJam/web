@@ -223,6 +223,11 @@ const init = async () => {
 			}
 		}
 	}
+	//
+	if (window.extout) {
+		window.extout.setIchigoJamCore(ex);
+	}
+	//
 
 	var framecnt = 0
 	setInterval(function () {
