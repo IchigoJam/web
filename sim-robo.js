@@ -94,7 +94,10 @@ export class SimRobo extends HTMLElement {
     } else {
       this.motorl = 0;
     }
-    const move = this.motorl || this.motorr;
+    this.move();
+  }
+  move() {
+    const move = this.motorl != 0 || this.motorr != 0;
     if (!this.t && move) {
       this.t = setInterval(() => {
         if (this.dragging) return;
@@ -140,7 +143,28 @@ export class SimRobo extends HTMLElement {
     //console.log(len, this.direction, this.distancesensor);
   }
   setSegments(n) {
-    this.out(n);
+    // pwm
+    let pwmmode = false;
+    { 
+			const v = this.ex.getPWMValue(2);
+			const len = this.ex.getPWMLen(2);
+      if (len > 0) {
+        this.motorr = (v > len ? len : v) / len;
+        pwmmode = true;
+      }
+    }
+    {
+			const v = this.ex.getPWMValue(5);
+			const len = this.ex.getPWMLen(5);
+      if (len > 0) {
+        this.motorl = (v > len ? len : v) / len;
+        pwmmode = true;
+      }
+    }
+    if (!pwmmode) {
+      this.out(n);
+    }
+    this.move();
   }
   setIchigoJamCore(ex) {
     this.ex = ex;
