@@ -226,6 +226,9 @@ const init = async () => {
 	//
 	if (window.extout) {
 		window.extout.setIchigoJamCore(ex);
+		const mode = new URL(document.location).searchParams.get("extout");
+		console.log("extmode", mode)
+		window.extout.setMode(mode);
 	}
 	//
 
