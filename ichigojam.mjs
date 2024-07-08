@@ -1266,6 +1266,11 @@ CAP ALT CTL INS KAN | ? < > ↑ _ ]
 			setButtonState(0)
 		}
 	}
+	canvas.onmousemove = (e) => {
+		const x = e.offsetX / canvas.clientWidth;
+		ex.setStateIN(2, Math.max(Math.min(x * 1023, 1023), 0));
+		//const y = e.offsetY / canvas.clientHeight;
+	};
 	// gamepad
 	let pads = null
   const gamepadEvent = 'ongamepadconnected' in window
