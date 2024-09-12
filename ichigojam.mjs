@@ -5,6 +5,7 @@ import { DobutsuCode } from "https://pcn-club.github.io/DobutsuCode/DobutsuCode.
 import { DobutsuStorageClient } from "https://pcn-club.github.io/DobutsuStorage/DobutsuStorageClient.js";
 import { JoyConSupport } from "./JoyConSupport.js";
 import { BeepNode } from "./BeepNode.js";
+import { encodeURIComponent2 } from "./encodeURIComponent2.js";
 
 //import { QRCodeReader } from "https://code4fukui.github.io/qr-code-reader/qr-code-reader.js";
 
@@ -1027,14 +1028,14 @@ CAP ALT CTL INS KAN | ? < > ↑ _ ]
 		
 		program.value = s;
 		resizeInput(program);
-		document.location.hash = "#" + encodeURIComponent(s);
+		document.location.hash = "#" + encodeURIComponent2(s);
 		
 		// save(s);
 	};
 	btn_import.onclick = function() {
 		const s = program.value
 		puts(s)
-		document.location.hash = "#" + encodeURIComponent(s)
+		document.location.hash = "#" + encodeURIComponent2(s)
 	}
 	btn_full.onclick = function() {
 		//const usefullscreen = false
