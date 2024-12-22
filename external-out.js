@@ -1,17 +1,19 @@
 import { SevenSegment } from "./seven-segment.js";
 import { TrafficSignal } from "./traffic-signal.js";
 import { SimRobo } from "./sim-robo.js";
+import { SimLED } from "./sim-led.js";
 
-const modes = ["sseg", "signal", "robo"];
+const modes = ["led", "sseg", "signal", "robo"];
 
 export class ExternalOut extends HTMLElement {
-  constructor(mode = "sseg") {
+  constructor(mode = "led") {
     super();
     this.style.display = "inline-block";
+    this.led = new SimLED();
     this.signal = new TrafficSignal();
     this.sseg = new SevenSegment();
     this.robo = new SimRobo();
-    this.outs = [this.sseg, this.signal, this.robo];
+    this.outs = [this.led, this.sseg, this.signal, this.robo];
     const nmode = modes.indexOf(mode);
     this.state = nmode < 0 ? 0 : nmode;
     this.appendChild(this.outs[this.state]);
