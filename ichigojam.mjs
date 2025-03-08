@@ -6,9 +6,11 @@ import { DobutsuStorageClient } from "https://pcn-club.github.io/DobutsuStorage/
 import { JoyConSupport } from "./JoyConSupport.js";
 import { BeepNode } from "./BeepNode.js";
 import { encodeURIComponent2 } from "./encodeURIComponent2.js";
+import { ctrlEmbot } from "./ext_embot.js";
 
 //import { QRCodeReader } from "https://code4fukui.github.io/qr-code-reader/qr-code-reader.js";
 
+// CocoroKit
 let cocoro = null;
 let CocorokitPlus = null;
 let cocorobtn = 0;
@@ -353,6 +355,7 @@ const init = async () => {
 
 		g.setColor(0, 0, 0);
 		const led = outport & (1 << 6);
+		ctrlEmbot.led(led); // for F503i/embot
 		if (!cocoro) {
 			if (led) {
 				//g.setColor(255, 255, 255);
@@ -393,6 +396,7 @@ const init = async () => {
 		} else if (window.extout) {
 			extout.setSegments(outport);
 		}
+		ctrlEmbot.setOutput(outport);
 		if (outflg.length > 0) {
 			for (let i = 1; i < 12; i++) {
 				const n = (i + 6) % 11
@@ -1540,5 +1544,12 @@ const releaseSound = async () => {
 	await context.close();
 	context = null;
 };
+
+// embot
+if (window.btnembot) {
+	window.btnembot.onclick = () => {
+		ctrlEmbot.init(ex);
+	};
+}
 
 export { setSpeechMode, ex };
