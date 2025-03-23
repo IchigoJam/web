@@ -10,6 +10,9 @@ import { ctrlEmbot } from "./ext_embot.js";
 
 //import { QRCodeReader } from "https://code4fukui.github.io/qr-code-reader/qr-code-reader.js";
 
+const urlParams = new URLSearchParams(window.location.search);
+const crtfiltermode = urlParams.has("crt");
+
 // CocoroKit
 let cocoro = null;
 let CocorokitPlus = null;
@@ -274,6 +277,11 @@ const init = async () => {
 	
 	var g = util.getContext(canvas)
 	g.init()
+	if (crtfiltermode) {
+		const initFilterCRT = (await import("https://code4fukui.github.io/crt-filter/initFilterCRT.js")).initFilterCRT;
+		initFilterCRT(canvas, [1, 1, 1]);
+	}
+	canvas.style.backgroundColor = "white";
 
 	var t = 0;
 	
