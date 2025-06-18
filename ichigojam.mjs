@@ -7,6 +7,7 @@ import { JoyConSupport } from "./JoyConSupport.js";
 import { BeepNode } from "./BeepNode.js";
 import { encodeURIComponent2 } from "./encodeURIComponent2.js";
 import { ctrlEmbot } from "./ext_embot.js";
+import { ctrlIchigoDake } from "./ext_ichigodake.js";
 
 //import { QRCodeReader } from "https://code4fukui.github.io/qr-code-reader/qr-code-reader.js";
 
@@ -405,6 +406,7 @@ const init = async () => {
 			extout.setSegments(outport);
 		}
 		ctrlEmbot.setOutput(outport);
+		ctrlIchigoDake.setOutput(outport);
 		if (outflg.length > 0) {
 			for (let i = 1; i < 12; i++) {
 				const n = (i + 6) % 11
@@ -1557,6 +1559,13 @@ const releaseSound = async () => {
 if (window.btnembot) {
 	window.btnembot.onclick = () => {
 		ctrlEmbot.init(ex);
+	};
+}
+
+// IchigoDake
+if (window.btnichigodake) {
+	window.btnichigodake.onclick = () => {
+		ctrlIchigoDake.init(ex);
 	};
 }
 
