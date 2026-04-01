@@ -702,24 +702,27 @@ const init = async () => {
 		e.preventDefault();
 	};
 	
-	btn_esc.onclick = function() {
-		putc(27);
-	};
+	if (window.btn_esc) {
+		btn_esc.onclick = function() {
+			putc(27);
+		};
+	}
 
 	// keyboards
 	if (window.btn_keys === undefined) {
 		window.btn_keys = {};
 	}
-	btn_keys.onclick = function() {
-		if (keyspanel.style.display == "block") {
-			keyspanel.style.display = 'none'
-			return
-		}
-		keyspanel.style.display = 'block'
-		if (keyspanel.children.length) {
-			return
-		}
-		const KEYBOARD =
+	if (window.keyspanel) {
+		btn_keys.onclick = function() {
+			if (keyspanel.style.display == "block") {
+				keyspanel.style.display = 'none'
+				return
+			}
+			keyspanel.style.display = 'block'
+			if (keyspanel.children.length) {
+				return
+			}
+			const KEYBOARD =
 `ESC F1 F2 F3 F4 F5 F6 F7 F8 F9 F10 BS
 ! " # $ % & ' ( ) \` = ~
 1 2 3 4 5 6 7 8 9 0 - ^
@@ -728,119 +731,121 @@ A S D F G H J K L ; : [
 Z X C V B N M , . + * }
 CAP ALT CTL INS KAN | ? < > ↑ _ ]
 ⇧ TAB  SPC  \\ /  ← ↓ → ⏎`
-		const keys = util.makeGrids(KEYBOARD)
-		keyspanel.appendChild(keys)
-		const map = { '⏎': 10, '←': 28, '→': 29, '↑': 30, '↓': 31, 'X': 88, 'ESC': 27, 'TAB': 9, 'SPC': 32, 'BS': 8, 'KAN': 15, 'ALT': -1, 'CTL': -1, 'DEL': 127, 'INS': 17 }
-		const func = [ "\x13\x0c", "\x18LOAD", "\x18SAVE", "\x18\x0cLIST\n", "\x18RUN\n",  "\x18?FREE()\n", "\x18OUT0\n", "\x18VIDEO1\n", "\x18\x0cFILES\n", "\x18SWITCH\n" ]
+			const keys = util.makeGrids(KEYBOARD)
+			keyspanel.appendChild(keys)
+			const map = { '⏎': 10, '←': 28, '→': 29, '↑': 30, '↓': 31, 'X': 88, 'ESC': 27, 'TAB': 9, 'SPC': 32, 'BS': 8, 'KAN': 15, 'ALT': -1, 'CTL': -1, 'DEL': 127, 'INS': 17 }
+			const func = [ "\x13\x0c", "\x18LOAD", "\x18SAVE", "\x18\x0cLIST\n", "\x18RUN\n",  "\x18?FREE()\n", "\x18OUT0\n", "\x18VIDEO1\n", "\x18\x0cFILES\n", "\x18SWITCH\n" ]
 		
-		const hasTapEvent = (function(){
-			const div = document.createElement('div')
-			div.setAttribute('ontouchstart', 'return')
-			return typeof div.ontouchstart === 'function'
-		})()
-		const ondown = hasTapEvent ? 'ontouchstart' : 'onmousedown'
-		const onup = hasTapEvent ? 'ontouchend' : 'onmouseup'
+			const hasTapEvent = (function(){
+				const div = document.createElement('div')
+				div.setAttribute('ontouchstart', 'return')
+				return typeof div.ontouchstart === 'function'
+			})()
+			const ondown = hasTapEvent ? 'ontouchstart' : 'onmousedown'
+			const onup = hasTapEvent ? 'ontouchend' : 'onmouseup'
 		
 
-		// make backup key's content
-		for (let i = 0; i < keys.children.length; i++) {
-			const k = keys.children[i]
-			k.bkc = k.textContent
-		}
-		const setShiftMode = function(shiftmode) {
+			// make backup key's content
 			for (let i = 0; i < keys.children.length; i++) {
 				const k = keys.children[i]
-				if (k.textContent.length == 1) {
-					k.textContent = shiftmode ? k.textContent.toLowerCase() : k.textContent.toUpperCase()
-				}
+				k.bkc = k.textContent
 			}
-		}
-		const setAltMode = function(altmode, shiftmode) {
-			for (let i = 0; i < keys.children.length; i++) {
-				const k = keys.children[i]
-				if (altmode) {
-					if (k.bkc.length == 1) {
-						let c = k.bkc.charCodeAt(0)
-						if (c >= '0'.charCodeAt(0) && c <= '9'.charCodeAt(0)) {
-							c = c - '0'.charCodeAt(0) + (shiftmode ? 0x80 : 0xe0)
-						} else if (c >= 'A'.charCodeAt(0) && c <= 'Z'.charCodeAt(0)) {
-							c = ((c - 'A'.charCodeAt(0) + 10) & 0x1f) + (shiftmode ? 0x80 : 0xe0)
-						} else {
-							c = 0
-						}
-						if (c) {
-							k.textContent = encodeEmoji(c)
-							k.emoji = true
-						}
+			const setShiftMode = function(shiftmode) {
+				for (let i = 0; i < keys.children.length; i++) {
+					const k = keys.children[i]
+					if (k.textContent.length == 1) {
+						k.textContent = shiftmode ? k.textContent.toLowerCase() : k.textContent.toUpperCase()
 					}
-				} else {
-					k.textContent = k.bkc
-					k.emoji = false
 				}
 			}
-		}
-		const resetOnetimeShiftMode = function() {
-			if (keys.shiftmodeOnetime) {
-				if (keys.altmode) {
-					setAltMode(true, false)
-				} else {
-					setShiftMode(false)
-				}
-				keys.shiftmode = false
-			}
-		}
-
- 		for (let i = 0; i < keys.children.length; i++) {
-			const key = keys.children[i]
-			key[ondown] = function(e) {
-				//e.preventDefault()
-				const c = this.textContent
-				if (c == 'CAP' || c == '⇧') {
-					keys.shiftmode = !keys.shiftmode
-					keys.shiftmodeOnetime = keys.shiftmode && c == '⇧'
-					if (keys.altmode) {
-						setAltMode(true, keys.shiftmode)
+			const setAltMode = function(altmode, shiftmode) {
+				for (let i = 0; i < keys.children.length; i++) {
+					const k = keys.children[i]
+					if (altmode) {
+						if (k.bkc.length == 1) {
+							let c = k.bkc.charCodeAt(0)
+							if (c >= '0'.charCodeAt(0) && c <= '9'.charCodeAt(0)) {
+								c = c - '0'.charCodeAt(0) + (shiftmode ? 0x80 : 0xe0)
+							} else if (c >= 'A'.charCodeAt(0) && c <= 'Z'.charCodeAt(0)) {
+								c = ((c - 'A'.charCodeAt(0) + 10) & 0x1f) + (shiftmode ? 0x80 : 0xe0)
+							} else {
+								c = 0
+							}
+							if (c) {
+								k.textContent = encodeEmoji(c)
+								k.emoji = true
+							}
+						}
 					} else {
-						setShiftMode(keys.shiftmode)
+						k.textContent = k.bkc
+						k.emoji = false
 					}
-					return
 				}
-				if (c == 'ALT') {
-					keys.altmode = !keys.altmode
-					setAltMode(keys.altmode, keys.shiftmode)
-				}
-				if (this.emoji) {
-					puts(c)
-					return
-				}
-				const c2 = map[c]
-				if (c2) {
-					if (c2 >= 0) {
-						putc(c2)
-						if (c2 >= 28 && c2 <= 32 || c2 == 88) {
-							keyDown(c2)
-						}
-					}
-					resetOnetimeShiftMode()
-					return
-				}
-				if (c.length > 1 && c.charAt(0) == 'F') {
-					const c3 = func[parseInt(c.substring(1)) - 1]
-					if (c3)
-						puts(c3)
-					return
-				}
-				puts(c)
-				resetOnetimeShiftMode()
 			}
-			key[onup] = function(e) {
-				//if (e.cancelable)
-				e.preventDefault()
-				const c = this.textContent
-				const c2 = map[c]
-				if (c2 >= 28 && c2 <= 32 || c2 == 88) {
-					keyUp(c2)
-					return
+			const resetOnetimeShiftMode = function() {
+				if (keys.shiftmodeOnetime) {
+					if (keys.altmode) {
+						setAltMode(true, false)
+					} else {
+						setShiftMode(false)
+					}
+					keys.shiftmode = false
+				}
+			}
+		
+
+ 			for (let i = 0; i < keys.children.length; i++) {
+				const key = keys.children[i]
+				key[ondown] = function(e) {
+					//e.preventDefault()
+					const c = this.textContent
+					if (c == 'CAP' || c == '⇧') {
+						keys.shiftmode = !keys.shiftmode
+						keys.shiftmodeOnetime = keys.shiftmode && c == '⇧'
+						if (keys.altmode) {
+							setAltMode(true, keys.shiftmode)
+						} else {
+							setShiftMode(keys.shiftmode)
+						}
+						return
+					}
+					if (c == 'ALT') {
+						keys.altmode = !keys.altmode
+						setAltMode(keys.altmode, keys.shiftmode)
+					}
+					if (this.emoji) {
+						puts(c)
+						return
+					}
+					const c2 = map[c]
+					if (c2) {
+						if (c2 >= 0) {
+							putc(c2)
+							if (c2 >= 28 && c2 <= 32 || c2 == 88) {
+								keyDown(c2)
+							}
+						}
+						resetOnetimeShiftMode()
+						return
+					}
+					if (c.length > 1 && c.charAt(0) == 'F') {
+						const c3 = func[parseInt(c.substring(1)) - 1]
+						if (c3)
+							puts(c3)
+						return
+					}
+					puts(c)
+					resetOnetimeShiftMode()
+				}
+				key[onup] = function(e) {
+					//if (e.cancelable)
+					e.preventDefault()
+					const c = this.textContent
+					const c2 = map[c]
+					if (c2 >= 28 && c2 <= 32 || c2 == 88) {
+						keyUp(c2)
+						return
+					}
 				}
 			}
 		}
@@ -848,7 +853,7 @@ CAP ALT CTL INS KAN | ? < > ↑ _ ]
 	const ua = window.navigator.userAgent;
 	const isMobile = ua.indexOf('iP') >= 0 || ua.indexOf('Android') >= 0;
 	const isIPad = ua.indexOf("ipad") >= 0 || (ua.indexOf("macintosh") >= 0 && "ontouchend" in document);
-	if (isMobile || isIPad) {
+	if (window.keyspanel && (isMobile || isIPad)) {
 		btn_keys.onclick();
 	}
 
@@ -1013,83 +1018,89 @@ CAP ALT CTL INS KAN | ? < > ↑ _ ]
 	};
 	*/
 	// program
-	btn_export.onclick = function() {
-		var s = "";
-		var n = RAM_LIST;
-		for (;;) {
-			var line = (ram[n + 1] << 8) | ram[n];
-			if (line == 0)
-				break;
-			s += line + " ";
-			var len = ram[n + 2];
-			for (let i = 0; i < len; i++) {
-				var c = ram[n + 3 + i];
-				if (c) {
-					const ch = encodeEmoji(c)
-					if (ch) {
-						s += ch
-					} else {
-						c = kana.fromHankaku(c)
-						s += String.fromCodePoint(c) //String.fromCharCode(c)
+	if (window.btn_export && window.program) {
+		btn_export.onclick = function() {
+			var s = "";
+			var n = RAM_LIST;
+			for (;;) {
+				var line = (ram[n + 1] << 8) | ram[n];
+				if (line == 0)
+					break;
+				s += line + " ";
+				var len = ram[n + 2];
+				for (let i = 0; i < len; i++) {
+					var c = ram[n + 3 + i];
+					if (c) {
+						const ch = encodeEmoji(c)
+						if (ch) {
+							s += ch
+						} else {
+							c = kana.fromHankaku(c)
+							s += String.fromCodePoint(c) //String.fromCharCode(c)
+						}
 					}
 				}
+				s += '\n';
+				if ((len & 1))
+					len++;
+				n += 4 + len;
 			}
-			s += '\n';
-			if ((len & 1))
-				len++;
-			n += 4 + len;
+		
+			program.value = s;
+			resizeInput(program);
+			document.location.hash = "#" + encodeURIComponent2(s);
+		
+			// save(s);
+		};
+		btn_import.onclick = function() {
+			const s = program.value
+			puts(s)
+			document.location.hash = "#" + encodeURIComponent2(s)
 		}
-		
-		program.value = s;
-		resizeInput(program);
-		document.location.hash = "#" + encodeURIComponent2(s);
-		
-		// save(s);
-	};
-	btn_import.onclick = function() {
-		const s = program.value
-		puts(s)
-		document.location.hash = "#" + encodeURIComponent2(s)
 	}
-	btn_full.onclick = function() {
-		//const usefullscreen = false
-		const usefullscreen = true
-		if (usefullscreen && requestFullscreen(canvas))
-			return
+	if (window.btn_full) {
+		btn_full.onclick = function() {
+			//const usefullscreen = false
+			const usefullscreen = true
+			if (usefullscreen && requestFullscreen(canvas))
+				return
 		
-		this.flg = !this.flg
-		if (this.flg) {
-			const dw = document.body.clientWidth
-			const dh = document.body.clientHeight
-			const cw = canvas.clientWidth
-			const ch = canvas.clientHeight
-			canvas.bkwidth = canvas.style.width
-			canvas.bkheight = canvas.style.height
-			if (dw / dh < cw / ch) {
-				canvas.style.width = dw + 'px'
-				canvas.style.height = Math.floor(ch / cw * dw) + "px"
+			this.flg = !this.flg
+			if (this.flg) {
+				const dw = document.body.clientWidth
+				const dh = document.body.clientHeight
+				const cw = canvas.clientWidth
+				const ch = canvas.clientHeight
+				canvas.bkwidth = canvas.style.width
+				canvas.bkheight = canvas.style.height
+				if (dw / dh < cw / ch) {
+					canvas.style.width = dw + 'px'
+					canvas.style.height = Math.floor(ch / cw * dw) + "px"
+				} else {
+					canvas.style.width = Math.floor(cw / ch * dh) + "px"
+					canvas.style.height = dh + 'px'
+					scrollTo(0, window.pageYOffset + canvas.getBoundingClientRect().top)
+				}
 			} else {
-				canvas.style.width = Math.floor(cw / ch * dh) + "px"
-				canvas.style.height = dh + 'px'
-				scrollTo(0, window.pageYOffset + canvas.getBoundingClientRect().top)
+				canvas.style.width = canvas.bkwidth
+				canvas.style.height = canvas.bkheight
 			}
-		} else {
-			canvas.style.width = canvas.bkwidth
-			canvas.style.height = canvas.bkheight
 		}
 	}
 	window.onorientationchange = function() {
-		if (btn_full.flg) {
+		if (window.btn_full && btn_full.flg) {
 			btn_full.onclick()
 		}
 	}
-	btn_audio.onclick = async () => {
-		if (btn_audio.textContent == 'AUDIO ON') {
-			snd = await getSound();
-			btn_audio.textContent = 'AUDIO OFF'
-		} else {
-			releaseSound();
-			btn_audio.textContent = 'AUDIO ON'
+	if (window.btn_audio) {
+		btn_audio.onclick = async () => {
+			if (btn_audio.textContent == 'AUDIO ON') {
+				snd = await getSound();
+				btn_audio.textContent = 'AUDIO OFF'
+			} else {
+				releaseSound();
+				btn_audio.textContent = 'AUDIO ON'
+			}
 		}
 	}
 
@@ -1222,12 +1233,6 @@ CAP ALT CTL INS KAN | ? < > ↑ _ ]
 	};
 	//
 	
-	program.style.lineHeight = "14px";
-	program.style.height = "30px";
-	program.addEventListener("input", function(e) {
-		resizeInput(e.target);
-		var el = e.target;
-	});
 	var resizeInput = function(el) {
 		if (el.scrollHeight > el.offsetHeight) {
 			el.style.height = el.scrollHeight + "px";
@@ -1243,6 +1248,14 @@ CAP ALT CTL INS KAN | ? < > ↑ _ ]
 			}
 		}
 	};
+	if (window.program) {
+		program.style.lineHeight = "14px";
+		program.style.height = "30px";
+		program.addEventListener("input", function(e) {
+			resizeInput(e.target);
+			var el = e.target;
+		});
+	}
 	
 	initfunc = function() {
 		var hash = document.location.hash;
@@ -1251,8 +1264,10 @@ CAP ALT CTL INS KAN | ? < > ↑ _ ]
 			putc(27); // esc before import
 			puts("NEW\n"); // new before import
 			puts(s);
-			program.value = s;
-			resizeInput(program);
+			if (window.program) {
+				program.value = s;
+				resizeInput(program);
+			}
 		} else {
 			/*
 			var s = load();

@@ -1,0 +1,24 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><link rel="icon" href="data:">
+<title>IchigoJam web simple</title>
+<script src="ichigojam.mjs" type="module"></script>
+<style>
+body {
+	margin: 0;
+	background: #000;
+	display: grid;
+	place-items: center;
+	min-height: 100vh;
+	overflow: hidden;
+}
+#canvas {
+	width: min(100vw, calc(100vh * 544 / 416));
+	height: min(100vh, calc(100vw * 416 / 544));
+	background: #000;
+	image-rendering: pixelated;
+}
+</style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+</body>
+</html>
