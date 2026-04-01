@@ -247,61 +247,14 @@ const init = async () => {
 		const initFilterCRT = (await import("https://code4fukui.github.io/crt-filter/initFilterCRT.js")).initFilterCRT;
 		initFilterCRT(canvas, [1, 1, 1]);
 	}
-	canvas.style.backgroundColor = "white";
+	//canvas.style.backgroundColor = "white";
 
 	var t = 0;
 	
 	var dw = 32;
 	var dh = 24;
 	
-	var drawChar = function(g, c, x, y, w, h, cursor) {
-		if (t & 0x10)
-			cursor = 0;
-		var ptn = charptn;
-		var ptnoff = c * 8;
-		if (c >= 224) {
-			ptn = ram;
-			ptnoff = (c - 224) * 8;
-		}
-		var r = w / 8;
-		if (screeninvert)
-			g.setColor(0, 0, 0);
-		else
-			g.setColor(255, 255, 255);
-		if (cursor == 1) {
-			for (let i = 0; i < 8; i++) {
-				const n = ptn[ptnoff + i];
-				for (let j = 0; j < 8; j++) {
-					if ((n & (1 << (7 - j))) == 0) {
-						g.fillRect(x + j * r, y + i * r, r, r);
-					}
-				}
-			}
-		} else if (cursor == 2) {
-			for (let i = 0; i < 8; i++) {
-				const n = ptn[ptnoff + i];
-				for (let j = 0; j < 4; j++) {
-					if ((n & (1 << (7 - j))) == 0) {
-						g.fillRect(x + j * r, y + i * r, r, r);
-					}
-				}
-				for (let j = 4; j < 8; j++) {
-					if (n & (1 << (7 - j))) {
-						g.fillRect(x + j * r, y + i * r, r, r);
-					}
-				}
-			}
-		} else {
-			for (let i = 0; i < 8; i++) {
-				const n = ptn[ptnoff + i];
-				for (let j = 0; j < 8; j++) {
-					if (n & (1 << (7 - j))) {
-						g.fillRect(x + j * r, y + i * r, r, r);
-					}
-				}
-			}
-		}
-	};
+
 	//var ram;
 	//var charptn;
 	var outport;
@@ -320,22 +273,78 @@ const init = async () => {
 		var sh = g.ch;
 		sw = canvas.width;
 		sh = canvas.height;
-		
+		g.clearRect(0, 0, sw, sh);
+
+		const bgcolor = window.ichigojam_bgcolor ?? "black";
+		const fgcolor = window.ichigojam_fgcolor ?? "white";
+		var drawChar = function(g, c, x, y, w, h, cursor) {
+			if (t & 0x10)
+				cursor = 0;
+			var ptn = charptn;
+			var ptnoff = c * 8;
+			if (c >= 224) {
+				ptn = ram;
+				ptnoff = (c - 224) * 8;
+			}
+			var r = w / 8;
+			if (screeninvert) {
+				g.fillStyle = bgcolor;
+			} else {
+				g.fillStyle = fgcolor;
+			}
+			if (cursor == 1) {
+				for (let i = 0; i < 8; i++) {
+					const n = ptn[ptnoff + i];
+					for (let j = 0; j < 8; j++) {
+						if ((n & (1 << (7 - j))) == 0) {
+							g.fillRect(x + j * r, y + i * r, r, r);
+						}
+					}
+				}
+			} else if (cursor == 2) {
+				for (let i = 0; i < 8; i++) {
+					const n = ptn[ptnoff + i];
+					for (let j = 0; j < 4; j++) {
+						if ((n & (1 << (7 - j))) == 0) {
+							g.fillRect(x + j * r, y + i * r, r, r);
+						}
+					}
+					for (let j = 4; j < 8; j++) {
+						if (n & (1 << (7 - j))) {
+							g.fillRect(x + j * r, y + i * r, r, r);
+						}
+					}
+				}
+			} else {
+				for (let i = 0; i < 8; i++) {
+					const n = ptn[ptnoff + i];
+					for (let j = 0; j < 8; j++) {
+						if (n & (1 << (7 - j))) {
+							g.fillRect(x + j * r, y + i * r, r, r);
+						}
+					}
+				}
+			}
+		};
+
 		//var tw = sw < 480 ? 8 : 8 * 2;
 		const off = 2
 		const tw = Math.min(sw / (dw + 2), sh / (dh + 2)) >> 0
 		var ox = (sw - tw * dw) / 2;
 		var oy = (sh - tw * dh) / 2;
 
-		g.setColor(0, 0, 0);
 		const led = outport & (1 << 6);
 		ctrlEmbot.led(led); // for F503i/embot
 		if (!cocoro) {
 			if (led) {
 				//g.setColor(255, 255, 255);
-				g.setColor(220, 55, 55);
+				if (window.ichigojam_ledcolor) {
+					g.fillStyle = window.ichigojam_ledcolor;
+				} else {
+					g.setColor(220, 55, 55);
+				}
 			} else {
-				g.setColor(0, 0, 0);
+				g.fillStyle = bgcolor;
 			}
 		} else {
 			if (led != bkled) {
@@ -379,10 +388,11 @@ const init = async () => {
 			}
 		}
 		
-		if (screeninvert)
-			g.setColor(255, 255, 255);
-		else
-			g.setColor(0, 0, 0);
+		if (screeninvert) {
+			g.fillStyle = fgcolor;
+		} else {
+			g.fillStyle = bgcolor;
+		}
 		g.fillRect(ox - tw / 8, oy - tw / 8, dw * tw + tw / 8 * 2, dh * tw + tw / 8 * 2);
 		
 		var dw2 = dw >> screenbig;
