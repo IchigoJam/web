@@ -239,41 +239,6 @@ const init = async () => {
 	}
 	//
 
-	var framecnt = 0
-	setInterval(function () {
-		handleGamePad();
-		if ((framecnt & 3) === 0) {
-			draw()
-		} else {
-			tick()
-			const n = ex.checkFileUpdate()
-			if (n >= 0) {
-				saveStorage(n)
-				console.log('save storage', n)
-			}
-			// output
-			if (window.uartOutput) {
-				if (uartoutput[0] > 0) {
-					let s = String.fromCharCode(uartoutput[0]);
-					for (let i = 1; i < uartoutput.length; i++) {
-						const c = uartoutput[i];
-						if (!c) {
-							break;
-						}
-						s += String.fromCharCode(c);
-					}
-					//console.log("uartoutput", s);
-					if (speechmode) {
-						speech(s);
-					}
-					window.uartOutput(s);
-					uartoutput[0] = 0;
-				}
-			}
-		}
-		framecnt++
-	}, 1000 / (60 * 4))
-
 	loadStorage()
 	
 	var g = util.getContext(canvas)
@@ -1495,6 +1460,41 @@ CAP ALT CTL INS KAN | ? < > ↑ _ ]
 		}
 
 	}
+
+	var framecnt = 0
+	setInterval(function () {
+		handleGamePad();
+		if ((framecnt & 3) === 0) {
+			draw()
+		} else {
+			tick()
+			const n = ex.checkFileUpdate()
+			if (n >= 0) {
+				saveStorage(n)
+				console.log('save storage', n)
+			}
+			// output
+			if (window.uartOutput) {
+				if (uartoutput[0] > 0) {
+					let s = String.fromCharCode(uartoutput[0]);
+					for (let i = 1; i < uartoutput.length; i++) {
+						const c = uartoutput[i];
+						if (!c) {
+							break;
+						}
+						s += String.fromCharCode(c);
+					}
+					//console.log("uartoutput", s);
+					if (speechmode) {
+						speech(s);
+					}
+					window.uartOutput(s);
+					uartoutput[0] = 0;
+				}
+			}
+		}
+		framecnt++
+	}, 1000 / (60 * 4))
 
 	// uartoutput
 	const sleep = async (msec) => new Promise((resolve) => setInterval(resolve, msec));
