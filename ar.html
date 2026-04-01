@@ -1,0 +1,84 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>PostureCorrrectGlass</title>
+<link rel="stylesheet" href="https://code4fukui.github.io/arglass-sim/style.css">
+</head><body>
+
+<div id="app"></div>
+<div id="scanlinesEl"></div>
+<div id="vignette"></div>
+
+<section id="launcher" class="hidden">
+  <h1>PostureCorrrectGlass</h1>
+  <p>Use WebXR AR when available, or start the fallback simulator.</p>
+  <div class="buttons">
+    <button id="startSimButton">Start Simulator</button>
+    <div id="xrButtonHost"></div>
+  </div>
+</section>
+<div id="touchHint" style="display: none">Drag to look around.</div>
+
+
+<canvas id="canvas" style="visibility: hidden"></canvas>
+
+<script type="module">
+import { ARGlassSim } from 'https://code4fukui.github.io/arglass-sim/ARGlassSim.js';
+import * as THREE from 'https://unpkg.com/three@0.164.1/build/three.module.js';
+import { ARButton } from 'https://unpkg.com/three@0.164.1/examples/jsm/webxr/ARButton.js';
+//import "https://ichigojam.github.io/web/ichigojam.mjs";
+import "./ichigojam.mjs";
+
+const drawContain = (ctx, canvas, w, h) => {
+  const scale = Math.min(w / canvas.width, h / canvas.height);
+
+  const dw = canvas.width * scale;
+  const dh = canvas.height * scale;
+
+  const dx = (w - dw) / 2;
+  const dy = (h - dh) / 2;
+
+  ctx.drawImage(canvas, dx, dy, dw, dh);
+};
+
+class ARGlassSimSimple extends ARGlassSim {
+  drawHudFrame({
+    ctx,
+    palette,
+    lineWidth,
+    relativeHeadingDeg,
+    displayHeadingDeg,
+    pitch,
+    pitchDeg,
+    roll,
+    rollDeg,
+    hh,
+    mm,
+    ss
+  }) {
+    const w = this.hudConfig.width;
+    const h = this.hudConfig.height;
+    ctx.clearRect(0, 0, w, h);
+    
+    window.ichigojam_bgcolor = "rgba(0, 0, 200, 0)";
+    window.ichigojam_fgcolor = this.hudColorString(palette.mesh, 1);
+    window.ichigojam_ledcolor = this.hudColorString(palette.mesh, .5);
+
+    drawContain(ctx, canvas, w, h);
+  }
+};
+
+const sim = new ARGlassSimSimple({
+  THREE,
+  ARButton,
+  mount: app,
+  launcher,
+  touchHint,
+  xrButtonHost,
+  scanlinesEl,
+  controls: null,
+  valueLabelRoot: document,
+});
+
+sim.start();
+</script>
+</body>
+</html>
