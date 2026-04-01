@@ -1373,7 +1373,7 @@ CAP ALT CTL INS KAN | ? < > ↑ _ ]
 	const padkeys = [ "x", "y", "z", "spc", "run", "esc", "enter", "up", "down", "left", "right" ]
 	const anas = [ 0, 2, 5, 6, 7, 8 ]
 	//const padkeys = [ "x", "spc" ]
-	const handleGamePad = function () {
+	function handleGamePad() {
 		const pad = getGamePad();
 		if (!pad) {
 			return;
